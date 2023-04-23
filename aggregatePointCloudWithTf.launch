@@ -1,0 +1,25 @@
+
+
+<launch>
+  <param name="/use_sim_time" value="true" />
+  <node type="point_cloud2_assembler" pkg="laser_assembler"
+        name="my_assembler" output="screen" >
+    <remap from="cloud" to="/velodyne_points"/>
+    <param name="max_clouds" type="int" value="400" />
+    <param name="fixed_frame" type="string" value="slam_wildcat" />
+  </node>
+
+  <node type="periodic_snapshotter" pkg="laser_assembler"
+        name="my_snapshotter" output="screen">
+  </node>
+
+  <node type="play" pkg="rosbag" name="rosbag" 
+    args="--clock /media/jhuai/BackupPlus/jhuai/data/kuangye-lidar/hovermap-sample/Yfkq_01/Yfkq_2021-06-23-01-28-35_0.bag" />
+  
+  <node type="rviz" pkg="rviz" name="rviz" args="-d $(find laser_assembler)/rviz.rviz" />
+</launch>
+
+<!-- Usage: roslaunch aggregatePointCloudWithTf.launch -->
+<!-- rosservice call /assemble_scans service-args -->
+<!-- viewing the resulting point cloud (published on the topic assembled_cloud) in rviz.  -->
+<!-- refer to http://wiki.ros.org/laser_assembler -->
